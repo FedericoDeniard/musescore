@@ -30,12 +30,14 @@ try:
     driver.get(url_user)
     driver.fullscreen_window()
 
+    print("Página cargada correctamente")
     scroller = driver.find_element("id", "jmuse-scroller-component")
     divs = scroller.find_elements("xpath", ".//div[contains(@class, 'EEnGW')]")  
 
     svg_filenames = []
     png_filenames = []
 
+    print("Descargando imágenes")
     for index, div in enumerate(divs):
         driver.execute_script("arguments[0].scrollIntoView();", div)
 
@@ -61,12 +63,14 @@ try:
     temp_pdf_filenames = []
     temp_png_filenames = []
 
+    print("Convertiendo imagenes PDF")
     if svg_filenames:
         for svg_file in svg_filenames:
             temp_pdf_file = svg_file.replace('.svg', '.pdf')
             cairosvg.svg2pdf(url=svg_file, write_to=temp_pdf_file)
             temp_pdf_filenames.append(temp_pdf_file)
 
+        print("Combinando imagenes PDF")
         merger = PyPDF2.PdfMerger()
         for pdf_file in temp_pdf_filenames:
             merger.append(pdf_file)
@@ -85,6 +89,8 @@ try:
             image = Image.open(png_file)
             image.save(temp_pdf_png_file, "PDF", resolution=100.0)
             temp_pdf_png_filenames.append(temp_pdf_png_file)
+
+        print("Combinando imagenes PDF")
         merger = PyPDF2.PdfMerger()
         for pdf_file in temp_pdf_png_filenames:
             merger.append(pdf_file)
